@@ -16,6 +16,9 @@ app.use(express.json());
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', service: 'control-plane' });
 });
+app.get('/', (req, res)=>{
+  res.send("Backend server running");
+})
 
 // Start the server
 app.listen(port, () => {
