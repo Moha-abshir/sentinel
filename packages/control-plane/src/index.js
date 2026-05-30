@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const db = require('./db/index');
+const monitorRoutes = require('./routes/monitorRoutes.js');
 
 process.on('SIGINT', ()=>{
   console.log("Shutting down the pool");
@@ -33,7 +34,13 @@ app.get('/health', (req, res) => {
 });
 app.get('/', (req, res)=>{
   res.send("Backend server running");
+});
+
+app.get('/api/monitor/create', (req, res)=>{
+  res.send("Testing")
 })
+
+app.use('/api/monitor/', monitorRoutes);
 
 // Start the server
 app.listen(port, () => {
