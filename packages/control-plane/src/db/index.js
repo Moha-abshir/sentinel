@@ -1,17 +1,16 @@
-const {Client} = require('pg');
-require('dotenv').config();
-const connection = new Client();
+const {Pool} = require('pg');
+const path = require('path');
+require('dotenv').config({path: '../env'});
 
-async function testConnection(){
-    try {
-        await connection.connect();
-        console.log('Database successfully connected');
-
-    } catch (error) {
-        console.log('Error connecting:', error.message);
-    } finally{
-        await connection.end();
-        console.log('Connection ended');
-    }
+const pool = new Pool({
+    //maximum number of connection
+    max: 20,
+    //How long a client is allowed to remain idle before being closed
+    idleTimeoutMillis = 2000,
+    //how long to wait for a connection to be estblished before throwing and error
+    connectionTimeoutMillis = 20000,
+});
+module.exports = {
+    query: (text, params) => pool.query(text, params),
+    pool:pool
 }
-testConnection();
