@@ -2,8 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const db = require('./db/index');
-const monitorRoutes = require('./routes/monitorRoutes.js');
-
+const monitorRoutes = require('./routes/monitorRoutes');
+const {start} = require('../src/services/scheduler');
 process.on('SIGINT', ()=>{
   console.log("Shutting down the pool");
   try {
@@ -32,6 +32,10 @@ app.use(express.json());
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', service: 'control-plane' });
 });
+
+//start the scheduler to fire probes as long as the server is up.
+start();
+
 app.get('/', (req, res)=>{
   res.send("Backend server running");
 });
