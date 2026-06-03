@@ -1,34 +1,63 @@
 const db = require('../db/index');
 const axios = require('axios');
-const runCycle = async ()=>{
+
+const getDueMonitors = async () => {
+    const query = `
+        SELECT * FROM monitors
+        WHERE status != 'paused' AND (
+            last_checked_at IS NULL 
+            OR EXTRACT(EPOCH FROM (NOW() - last_checked_at)) >= interval
+        )
+    `;
+    const result = await db.query(query);
+    return result.rows;
+};
+
+const dispatchProbe = async (monitor) => {
     try {
-        const result = await db.query("select * from monitors");
         const url = 'http://localhost:3001/api/agentOne/';
         const payload = {
-            url : result.rows[0].url,
-            interval : result.rows[0].interval
-        }
-
+            monitorId: monitor.id,
+            url: monitor.url
+        };
         await axios.post(url, payload);
-        console.log(url);
-        console.log(interval);
+        console.log(`Dispatched probe for monitor: ${monitor.name}`);
+        return true;
     } catch (error) {
-        console.log("Error: ", error.message);   
+        console.error(`Failed to dispatch probe for monitor ${monitor.name}:`, error.message);
+        return false;
     }
-}
-const start =  ()=>{
+};
+
+const updateLastChecked = async (monitorId) => {
+    await db.query(`UPDATE monitors SET last_checked_at = NOW() WHERE id = $1`, [monitorId]);
+};
+
+const runCycle = async () => {
     try {
-        runCycle();
-        console.log("Scheduler is up and running");
-        setInterval(()=>{
-            try {
-                runCycle();
-            } catch (error) {
-                console.log("Error:", error.message);
+        const dueMonitors = await getDueMonitors();
+        if (dueMonitors.length > 0) {
+            console.log(`[Scheduler] Found ${dueMonitors.length} monitors due for checking.`);
+        }
+        for (const monitor of dueMonitors) {
+            const dispatched = await dispatchProbe(monitor);
+            if (dispatched) {
+                await updateLastChecked(monitor.id);
             }
-        }, 1000000);
+        }
     } catch (error) {
-        console.log("Error: ", error.message);
+        console.error("Scheduler Cycle Error: ", error.message);
     }
-}
-module.exports = {start}
+};
+
+const start = () => {
+    console.log("Scheduler engine is up and running...");
+    runCycle();
+    
+    // Heartbeat runs every 10 seconds
+    setInterval(() => {
+        runCycle();
+    }, 10000);
+};
+
+module.exports = { start };

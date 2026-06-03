@@ -3,6 +3,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const db = require('./db/index');
 const monitorRoutes = require('./routes/monitorRoutes');
+const reportRoutes = require('./routes/reportRoutes.js');
 const {start} = require('../src/services/scheduler');
 process.on('SIGINT', ()=>{
   console.log("Shutting down the pool");
@@ -18,8 +19,6 @@ process.on('SIGINT', ()=>{
 
 // Load environment variables
 dotenv.config();
-
-
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -45,6 +44,8 @@ app.get('/api/monitor/create', (req, res)=>{
 })
 
 app.use('/api/monitor/', monitorRoutes);
+
+app.use('/api/reports', reportRoutes);
 
 // Start the server
 app.listen(port, () => {
