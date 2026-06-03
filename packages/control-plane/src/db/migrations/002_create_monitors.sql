@@ -5,6 +5,7 @@ CREATE table monitors(
     interval integer not null default 0,
     quorum integer not null default 1,
     status varchar(20) not null default 'pending',
+    last_checked_at timestamp,
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()
 )
