@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db/index');
-const saveResult = require('../db/queries/results');
+const aggregator = require('../services/aggregator');
 
 router.post('/', async (req, res) => {
     try {
@@ -11,14 +10,12 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ error: "Missing required fields: monitorId or agentId" });
         }
 
-        await saveResult({ monitorId, agentId, statusCode, responseTime, success });
+        // Hand off entirely to the aggregator!
+        await aggregator.receiveResult({ monitorId, agentId, statusCode, responseTime, success });
 
-        // Note: The Aggregator logic to update monitor status (online/offline/degraded) 
-        // based on these results will be wired up here in the next phase!
-
-        res.status(201).json({ message: "Report successfully saved to probe_results" });
+        res.status(201).json({ message: "Report handed off to aggregator" });
     } catch (error) {
-        console.error("Error saving report to DB:", error.message);
+        console.error("Error receiving report:", error.message);
         res.status(500).json({ error: "Internal server error" });
     }
 });
