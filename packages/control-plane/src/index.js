@@ -48,7 +48,13 @@ app.use('/api/monitor/', monitorRoutes);
 app.use('/api/reports/', reportRoutes);
 app.use('/api/auth/', userRoutes);
 
+const http = require('http');
+const { setupWebSocket } = require('./websocket/index');
+
 // Start the server
-app.listen(port, () => {
+const server = http.createServer(app);
+setupWebSocket(server);
+
+server.listen(port, () => {
   console.log(`Control-plane server is running on port ${port}`);
 });
