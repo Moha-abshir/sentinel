@@ -1,9 +1,9 @@
-const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 require('dotenv').config({ path: __dirname + '/../db/.env' });
 
 const { saveOTP, findValidOTP, markOTPAsUsed } = require('../db/queries/otps');
 const { findUserByEmail, createUser } = require('../db/queries/users');
+const { sendEmail } = require('../notification/email');
 
 const generateCode = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();
@@ -17,27 +17,12 @@ const requestOTP = async (req, res) => {
         const code = generateCode();
         await saveOTP(email, code);
 
-        const testAccount = await nodemailer.createTestAccount();
-        const transporter = nodemailer.createTransport({
-            host: "smtp.ethereal.email",
-            port: 587,
-            secure: false,
-            auth: {
-                user: testAccount.user,
-                pass: testAccount.pass,
-            },
-        });
-
-        const info = await transporter.sendMail({
-            from: '"Sentinel Auth" <no-reply@sentinel.local>',
+        await sendEmail({
             to: email,
             subject: "Your Sentinel Login Code",
             text: `Your OTP is: ${code}`,
             html: `<b>Your OTP is: ${code}</b>`,
         });
-
-        console.log("Message sent: %s", info.messageId);
-        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
         
         res.status(200).json({ success: true, message: "OTP sent successfully" });
     } catch (error) {
