@@ -14,7 +14,7 @@ const sendRequest = async(req, res)=>{
 
         if (!url || !monitorId) {
             console.error("Missing parameters!");
-            return; 
+            return res.status(401).json({error: "Missing parameters"}); 
         } 
         
         const startTime = Date.now();
