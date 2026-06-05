@@ -3,7 +3,8 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const db = require('./db/index');
 const monitorRoutes = require('./routes/monitorRoutes');
-const reportRoutes = require('./routes/reportRoutes.js');
+const reportRoutes = require('./routes/reportRoutes');
+const userRoutes = require('./routes/userRoutes')
 const {start} = require('../src/services/scheduler');
 process.on('SIGINT', ()=>{
   console.log("Shutting down the pool");
@@ -44,8 +45,8 @@ app.get('/api/monitor/create', (req, res)=>{
 })
 
 app.use('/api/monitor/', monitorRoutes);
-
-app.use('/api/reports', reportRoutes);
+app.use('/api/reports/', reportRoutes);
+app.use('/api/auth/', userRoutes);
 
 // Start the server
 app.listen(port, () => {
