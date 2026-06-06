@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api/client';
 import { Shield, Mail, KeyRound } from 'lucide-react';
+import './Login.css';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -42,49 +43,33 @@ export default function Login() {
     };
 
     return (
-        <div className="app-container" style={{ alignItems: 'center', justifyContent: 'center' }}>
-            <div className="glass-panel" style={{ width: '100%', maxWidth: '400px', padding: '3rem 2rem' }}>
+        <div className="app-container login-container">
+            <div className="glass-panel login-panel">
                 
-                <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                    <div style={{ 
-                        display: 'inline-flex', 
-                        padding: '1rem', 
-                        borderRadius: '50%', 
-                        background: 'rgba(0, 191, 165, 0.1)',
-                        marginBottom: '1rem'
-                    }}>
+                <div className="login-header">
+                    <div className="login-icon">
                         <Shield size={40} color="var(--accent-teal)" />
                     </div>
                     <h2>Sentinel Login</h2>
-                    <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
+                    <p className="login-subtext">
                         {step === 1 ? 'Passwordless Authentication' : 'Check your terminal for the code'}
                     </p>
                 </div>
 
                 {error && (
-                    <div style={{ 
-                        background: 'rgba(255, 82, 82, 0.1)', 
-                        border: '1px solid var(--status-offline)', 
-                        padding: '12px', 
-                        borderRadius: '8px',
-                        color: '#ff8a80',
-                        marginBottom: '1.5rem',
-                        textAlign: 'center',
-                        fontSize: '0.9rem'
-                    }}>
+                    <div className="login-error">
                         {error}
                     </div>
                 )}
 
                 {step === 1 ? (
                     <form onSubmit={handleRequestOTP}>
-                        <div style={{ marginBottom: '1.5rem', position: 'relative' }}>
-                            <Mail size={18} color="var(--text-secondary)" style={{ position: 'absolute', left: '16px', top: '14px' }} />
+                        <div className="input-wrapper">
+                            <Mail size={18} color="var(--text-secondary)" className="input-icon" />
                             <input 
                                 type="email" 
-                                className="input-teal" 
+                                className="input-teal login-input" 
                                 placeholder="Email Address" 
-                                style={{ paddingLeft: '44px' }}
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
@@ -96,13 +81,12 @@ export default function Login() {
                     </form>
                 ) : (
                     <form onSubmit={handleVerifyOTP}>
-                        <div style={{ marginBottom: '1.5rem', position: 'relative' }}>
-                            <KeyRound size={18} color="var(--text-secondary)" style={{ position: 'absolute', left: '16px', top: '14px' }} />
+                        <div className="input-wrapper">
+                            <KeyRound size={18} color="var(--text-secondary)" className="input-icon" />
                             <input 
                                 type="text" 
-                                className="input-teal" 
+                                className="input-teal code-input" 
                                 placeholder="6-digit Code" 
-                                style={{ paddingLeft: '44px', letterSpacing: '4px', textAlign: 'center' }}
                                 maxLength={6}
                                 value={code}
                                 onChange={(e) => setCode(e.target.value)}
@@ -114,16 +98,8 @@ export default function Login() {
                         </button>
                         <button 
                             type="button" 
+                            className="btn-back"
                             onClick={() => setStep(1)}
-                            style={{ 
-                                background: 'transparent', 
-                                border: 'none', 
-                                color: 'var(--text-secondary)',
-                                width: '100%',
-                                marginTop: '1rem',
-                                cursor: 'pointer',
-                                fontSize: '0.9rem'
-                            }}
                         >
                             Back to Email
                         </button>

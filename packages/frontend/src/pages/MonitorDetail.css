@@ -1,0 +1,89 @@
+.center-container {
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-back-nav {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    margin-bottom: 2rem;
+    padding: 0;
+    transition: color 0.2s;
+}
+
+.btn-back-nav:hover {
+    color: var(--text-primary);
+}
+
+.detail-header-panel {
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.detail-title {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.detail-subtext {
+    display: flex;
+    gap: 20px;
+    color: var(--text-secondary);
+}
+
+.subtext-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-pill-container {
+    text-align: right;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 8px 16px;
+    border-radius: 20px;
+}
+
+.pill-online {
+    border: 1px solid var(--status-online);
+}
+
+.pill-offline {
+    border: 1px solid var(--status-offline);
+}
+
+.status-text {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.85rem;
+}
+
+.chart-title {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chart-panel {
+    padding: 1rem;
+    height: 400px;
+}

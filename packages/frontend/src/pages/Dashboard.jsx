@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '../api/client';
 import { useWebSocket } from '../hooks/useWebSocket';
 import { Activity, Plus, Globe, Clock, ShieldCheck, ShieldAlert } from 'lucide-react';
+import './Dashboard.css';
 
 export default function Dashboard() {
     const [monitors, setMonitors] = useState([]);
@@ -53,79 +54,70 @@ export default function Dashboard() {
     return (
         <div className="app-container">
             {/* Header Area */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3rem' }}>
+            <div className="dashboard-header">
                 <div>
-                    <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <h1 className="dashboard-title">
                         <Activity color="var(--accent-teal)" size={36} />
                         Sentinel Dashboard
                     </h1>
-                    <div style={{ display: 'flex', gap: '16px', color: 'var(--text-secondary)', fontSize: '0.9rem', alignItems: 'center' }}>
-                        <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <div className="dashboard-stats">
+                        <span className="stat-item">
                             <div className={`status-dot ${isConnected ? 'online' : 'offline'}`} />
                             Live Feed {isConnected ? 'Active' : 'Disconnected'}
                         </span>
                         <span>•</span>
-                        <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span className="stat-item">
                             <ShieldCheck size={16} color="var(--status-online)"/> {onlineCount} Online
                         </span>
-                        <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span className="stat-item">
                             <ShieldAlert size={16} color="var(--status-offline)"/> {offlineCount} Offline
                         </span>
                     </div>
                 </div>
                 
-                <button className="btn-teal" style={{ width: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <button className="btn-teal btn-new-monitor">
                     <Plus size={18} />
                     New Monitor
                 </button>
             </div>
 
-            {error && <div style={{ color: 'var(--status-offline)', marginBottom: '2rem' }}>{error}</div>}
+            {error && <div className="dashboard-error">{error}</div>}
 
             {loading ? (
-                <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-secondary)' }}>Loading infrastructure...</div>
+                <div className="dashboard-loading">Loading infrastructure...</div>
             ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                <div className="monitor-grid">
                     {monitors.length === 0 ? (
-                        <div className="glass-panel" style={{ gridColumn: '1 / -1', padding: '4rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                        <div className="glass-panel empty-state">
                             No monitors created yet. Click 'New Monitor' to start tracking.
                         </div>
                     ) : (
                         monitors.map((monitor) => (
                             <div 
                                 key={monitor.id} 
-                                className="glass-panel" 
-                                style={{ padding: '1.5rem', cursor: 'pointer', position: 'relative', overflow: 'hidden' }}
+                                className="glass-panel monitor-card"
                                 onClick={() => navigate(`/monitor/${monitor.id}`)}
                             >
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                                    <h3 style={{ fontSize: '1.2rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', paddingRight: '1rem' }}>
+                                <div className="card-header">
+                                    <h3 className="card-title">
                                         {monitor.name}
                                     </h3>
                                     <div className={`status-dot ${monitor.status || 'offline'}`} title={monitor.status} />
                                 </div>
                                 
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                                    <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <div className="card-details">
+                                    <span className="detail-item">
                                         <Globe size={14} />
                                         {new URL(monitor.url).hostname}
                                     </span>
-                                    <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <span className="detail-item">
                                         <Clock size={14} />
                                         Checks every {monitor.interval}s
                                     </span>
                                 </div>
 
                                 {/* Subtle accent bar at bottom for quick visual status */}
-                                <div style={{ 
-                                    position: 'absolute', 
-                                    bottom: 0, 
-                                    left: 0, 
-                                    right: 0, 
-                                    height: '4px', 
-                                    background: monitor.status === 'online' ? 'var(--status-online)' : 'var(--status-offline)',
-                                    opacity: 0.5
-                                }} />
+                                <div className={`accent-bar ${monitor.status === 'online' ? 'accent-online' : 'accent-offline'}`} />
                             </div>
                         ))
                     )}

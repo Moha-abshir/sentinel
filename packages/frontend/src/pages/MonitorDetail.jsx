@@ -4,6 +4,7 @@ import { api } from '../api/client';
 import { useWebSocket } from '../hooks/useWebSocket';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { ArrowLeft, Globe, Activity, Clock } from 'lucide-react';
+import './MonitorDetail.css';
 
 export default function MonitorDetail() {
     const { id } = useParams();
@@ -68,32 +69,32 @@ export default function MonitorDetail() {
         }
     };
 
-    if (loading) return <div className="app-container" style={{ alignItems: 'center', justifyContent: 'center' }}><div className="status-dot online"></div></div>;
+    if (loading) return <div className="app-container center-container"><div className="status-dot online"></div></div>;
     if (!monitor) return <div className="app-container">Monitor not found</div>;
 
     return (
         <div className="app-container">
             <button 
                 onClick={() => navigate('/')} 
-                style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginBottom: '2rem', padding: 0 }}
+                className="btn-back-nav"
             >
                 <ArrowLeft size={20} /> Back to Dashboard
             </button>
 
-            <div className="glass-panel" style={{ padding: '2rem', marginBottom: '2rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div className="glass-panel detail-header-panel">
+                <div className="header-flex">
                     <div>
-                        <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{monitor.name}</h1>
-                        <div style={{ display: 'flex', gap: '20px', color: 'var(--text-secondary)' }}>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Globe size={16} /> {monitor.url}</span>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Clock size={16} /> Every {monitor.interval}s</span>
+                        <h1 className="detail-title">{monitor.name}</h1>
+                        <div className="detail-subtext">
+                            <span className="subtext-item"><Globe size={16} /> {monitor.url}</span>
+                            <span className="subtext-item"><Clock size={16} /> Every {monitor.interval}s</span>
                         </div>
                     </div>
                     
-                    <div style={{ textAlign: 'right' }}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', background: 'rgba(0,0,0,0.3)', padding: '8px 16px', borderRadius: '20px', border: `1px solid ${monitor.status === 'online' ? 'var(--status-online)' : 'var(--status-offline)'}` }}>
+                    <div className="status-pill-container">
+                        <div className={`status-pill ${monitor.status === 'online' ? 'pill-online' : 'pill-offline'}`}>
                             <div className={`status-dot ${monitor.status}`} />
-                            <span style={{ fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.85rem' }}>
+                            <span className="status-text">
                                 {monitor.status}
                             </span>
                         </div>
@@ -101,12 +102,12 @@ export default function MonitorDetail() {
                 </div>
             </div>
 
-            <h3 style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <h3 className="chart-title">
                 <Activity size={20} color="var(--accent-teal)" />
                 Latency History (Last 24h)
             </h3>
             
-            <div className="glass-panel" style={{ padding: '1rem', height: '400px' }}>
+            <div className="glass-panel chart-panel">
                 <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={results}>
                         <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" vertical={false} />
