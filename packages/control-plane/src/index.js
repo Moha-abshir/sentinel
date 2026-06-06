@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const db = require('./db/index');
+const http = require('http');
+const { setupWebSocket } = require('./websocket/index');
 const monitorRoutes = require('./routes/monitorRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const userRoutes = require('./routes/userRoutes')
@@ -47,9 +49,6 @@ app.get('/api/monitor/create', (req, res)=>{
 app.use('/api/monitor/', monitorRoutes);
 app.use('/api/reports/', reportRoutes);
 app.use('/api/auth/', userRoutes);
-
-const http = require('http');
-const { setupWebSocket } = require('./websocket/index');
 
 // Start the server
 const server = http.createServer(app);
