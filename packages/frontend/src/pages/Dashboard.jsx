@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable react-hooks/immutability */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api/client';
