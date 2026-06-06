@@ -54,6 +54,7 @@ export const useWebSocket = (url) => {
                 clearTimeout(reconnectTimeoutRef.current);
             }
         };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [url]);
 
     return { socket, lastMessage, isConnected };
